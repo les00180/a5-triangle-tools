@@ -73,6 +73,7 @@ import triangle.abstractSyntaxTrees.visitors.VnameVisitor;
 import triangle.abstractSyntaxTrees.vnames.DotVname;
 import triangle.abstractSyntaxTrees.vnames.SimpleVname;
 import triangle.abstractSyntaxTrees.vnames.SubscriptVname;
+import triangle.abstractSyntaxTrees.commands.RepeatCommand;
 
 public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSyntaxTree>,
 		ActualParameterSequenceVisitor<Void, AbstractSyntaxTree>, ArrayAggregateVisitor<Void, AbstractSyntaxTree>,
@@ -490,21 +491,16 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 		return null;
 	}
 
+
 	@Override
-	public AbstractSyntaxTree visitRepeatCommand(RepeatCommand ast, Void unused) {
+	public AbstractSyntaxTree visitRepeatCommand(RepeatCommand ast, Void arg) {
+		ast.C.visit(this);
+		AbstractSyntaxTree replacement = ast.E.visit(this);
+		if (replacement != null) {
+			ast.E = (Expression) replacement;
+		}
 		return null;
 	}
-
-	// TODO uncomment if you've implemented the repeat command
-//	@Override
-//	public AbstractSyntaxTree visitRepeatCommand(RepeatCommand ast, Void arg) {
-//		ast.C.visit(this);
-//		AbstractSyntaxTree replacement = ast.E.visit(this);
-//		if (replacement != null) {
-//			ast.E = (Expression) replacement;
-//		}
-//		return null;
-//	}
 
 	@Override
 	public AbstractSyntaxTree visitMultipleArrayAggregate(MultipleArrayAggregate ast, Void arg) {
@@ -576,9 +572,25 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 			int int1 = (Integer.parseInt(((IntegerExpression) node1).IL.spelling));
 			int int2 = (Integer.parseInt(((IntegerExpression) node2).IL.spelling));
 			Object foldedValue = null;
-			
+
 			if (o.decl == StdEnvironment.addDecl) {
 				foldedValue = int1 + int2;
+			}
+			else if (o.decl == StdEnvironment.subtractDecl)
+			{
+				foldedValue = int1 - int2;
+			}
+			else if (o.decl == StdEnvironment.multiplyDecl)
+			{
+				foldedValue = int1 * int2;
+			}
+			else if (o.decl == StdEnvironment.divideDecl)
+			{
+				foldedValue = int1 / int2;
+			}
+			else if (o.decl == StdEnvironment.moduloDecl)
+			{
+				foldedValue = int1 % int2;
 			}
 
 			if (foldedValue instanceof Integer) {
