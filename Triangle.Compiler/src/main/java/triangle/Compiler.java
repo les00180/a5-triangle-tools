@@ -27,17 +27,15 @@ import triangle.syntacticAnalyzer.Parser;
 import triangle.syntacticAnalyzer.Scanner;
 import triangle.syntacticAnalyzer.SourceFile;
 import triangle.treeDrawer.Drawer;
+import com.sampullara.cli.Args;
+import com.sampullara.cli.Argument; //added cli library to classpath
+
 
 /**
  * The main driver class for the Triangle compiler.
  */
 public class Compiler {
 
-	/** The filename for the object program, normally obj.tam. */
-	static String objectName = "obj.tam";
-	
-	static boolean showTree = false;
-	static boolean folding = false;
 
 	private static Scanner scanner;
 	private static Parser parser;
@@ -120,6 +118,16 @@ public class Compiler {
 	 * @param args the only command-line argument to the program specifies the
 	 *             source filename.
 	 */
+
+	@Argument(alias = "m", description = "Boolean Value To Decide When to show tree", required = false)
+	static boolean showTree = false;
+
+	@Argument(alias = "m", description = "", required = false)
+	static boolean folding = false;
+
+	@Argument(alias = "m", description = "Filename for the object program (obj.tam)", required = true)
+	static String objectName = "obj.tam";
+
 	public static void main(String[] args) {
 
 		if (args.length < 1) {
