@@ -27,8 +27,6 @@ import triangle.syntacticAnalyzer.Parser;
 import triangle.syntacticAnalyzer.Scanner;
 import triangle.syntacticAnalyzer.SourceFile;
 import triangle.treeDrawer.Drawer;
-import com.sampullara.cli.Args;
-import com.sampullara.cli.Argument; //added cli library to classpath
 
 
 /**
@@ -119,13 +117,9 @@ public class Compiler {
 	 *             source filename.
 	 */
 
-	@Argument(alias = "m", description = "Boolean Value To Decide When to show tree", required = false)
+
 	static boolean showTree = false;
-
-	@Argument(alias = "m", description = "", required = false)
 	static boolean folding = false;
-
-	@Argument(alias = "m", description = "Filename for the object program (obj.tam)", required = true)
 	static String objectName = "obj.tam";
 
 	public static void main(String[] args) {

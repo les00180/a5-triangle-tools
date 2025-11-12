@@ -18,6 +18,8 @@
 
 package triangle.syntacticAnalyzer;
 
+import triangle.abstractSyntaxTrees.terminals.Operator;
+
 final class Token {
 
 	protected Kind kind;
