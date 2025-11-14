@@ -164,6 +164,14 @@ public class LayoutVisitor implements ActualParameterVisitor<Void, DrawingTree>,
 		return layoutBinary("RepeatUntilCom.", r1, r2);
 	}
 
+	@Override
+	public DrawingTree visitDoWhileDoCommand(DoWhileDoCommand ast, Void unused) {
+		var r1 = ast.E.visit(this);
+		var r2 = ast.C.visit(this);
+		var r3 = ast.C2.visit(this);
+		return layoutTernary("DoWhileDoCom.", r1, r2, r3);
+	}
+
 	// Expressions
 	@Override
 	public DrawingTree visitArrayExpression(ArrayExpression ast, Void obj) {

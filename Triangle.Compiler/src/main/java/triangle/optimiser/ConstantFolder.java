@@ -503,6 +503,11 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 	}
 
 	@Override
+	public AbstractSyntaxTree visitDoWhileDoCommand(DoWhileDoCommand ast, Void unused) {
+		return null;
+	}
+
+	@Override
 	public AbstractSyntaxTree visitMultipleArrayAggregate(MultipleArrayAggregate ast, Void arg) {
 		ast.AA.visit(this);
 		AbstractSyntaxTree replacement = ast.E.visit(this);

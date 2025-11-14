@@ -20,4 +20,6 @@ public interface CommandVisitor<TArg, TResult> {
 
 	TResult visitRepeatCommand(RepeatCommand ast, TArg arg);
 
+	TResult visitDoWhileDoCommand(DoWhileDoCommand ast, TArg arg);
+
 }

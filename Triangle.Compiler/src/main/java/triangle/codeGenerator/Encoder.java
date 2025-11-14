@@ -176,6 +176,21 @@ public final class Encoder implements ActualParameterVisitor<Frame, Integer>,
 		return null;
 	}
 
+	@Override
+	public Void visitDoWhileDoCommand(DoWhileDoCommand ast, Frame frame) {
+		//IMPLEMENT
+		var loopStart = emitter.getNextInstrAddr();
+		ast.C.visit(this, frame);
+		ast.E.visit(this, frame);
+
+		var exit = emitter.emit(OpCode.JUMPIF, Machine.falseRep, Register.CB, 0);
+
+		ast.C2.visit(this, frame);
+		emitter.emit(OpCode.JUMP, Register.CB, loopStart);
+		emitter.patch(exit);
+		return null;
+	}
+
 	// Expressions
 	@Override
 	public Integer visitArrayExpression(ArrayExpression ast, Frame frame) {
