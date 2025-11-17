@@ -53,23 +53,19 @@ public class TestScanner {
 	public void testHi() {
 		compileExpectSuccess("/hi.tri");
 	}
-	
 
 	@Test
 	public void testHiNewComment() {
 		compileExpectSuccess("/hi-newcomment.tri");
 	}
-	
 
 	@Test
 	public void testHiNewComment2() {compileExpectSuccess("/hi-newcomment2.tri");}
-	
 
 	@Test
 	public void testBarDemo() {
 		compileExpectSuccess("/bardemo.tri");
 	}
-	
 
 	@Test
 	public void testRepeatUntil() {compileExpectSuccess("/repeatuntil.tri");}
@@ -82,6 +78,9 @@ public class TestScanner {
 
 	@Test
 	public void testLoopWhile() {compileExpectSuccess("/loopwhile.tri");}
+
+	@Test
+	public void testCurly() {compileExpectSuccess("/while-curly.tri");}
 
 	
 	private void compileExpectSuccess(String filename) {

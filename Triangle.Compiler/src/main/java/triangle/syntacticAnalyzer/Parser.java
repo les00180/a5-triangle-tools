@@ -79,6 +79,8 @@ import triangle.abstractSyntaxTrees.vnames.SimpleVname;
 import triangle.abstractSyntaxTrees.vnames.SubscriptVname;
 import triangle.abstractSyntaxTrees.vnames.Vname;
 
+import static triangle.syntacticAnalyzer.Token.Kind.LET;
+
 public class Parser {
 
 	private Scanner lexicalAnalyser;
@@ -324,10 +326,16 @@ public class Parser {
 			break;
 
 		case BEGIN:
-			acceptIt();
-			commandAST = parseCommand();
-			accept(Token.Kind.END);
-			break;
+				acceptIt();
+				commandAST = parseCommand();
+				accept(Token.Kind.END);
+				break;
+
+			case LCURLY:
+				acceptIt();
+				commandAST = parseCommand();
+				accept(Token.Kind.RCURLY);
+				break;
 
 		case LET: {
 			acceptIt();
@@ -393,6 +401,7 @@ public class Parser {
 		case ELSE:
 		case IN:
 		case EOT:
+			case RCURLY:
 
 			finish(commandPos);
 			commandAST = new EmptyCommand(commandPos);

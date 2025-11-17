@@ -23,6 +23,7 @@ import triangle.codeGenerator.Emitter;
 import triangle.codeGenerator.Encoder;
 import triangle.contextualAnalyzer.Checker;
 import triangle.optimiser.ConstantFolder;
+import triangle.optimiser.ConstantFolderWithStats;
 import triangle.syntacticAnalyzer.Parser;
 import triangle.syntacticAnalyzer.Scanner;
 import triangle.syntacticAnalyzer.SourceFile;
@@ -56,10 +57,11 @@ public class Compiler {
 	 * @param showingTable true iff the object description details are to be
 	 *                     displayed during code generation (not currently
 	 *                     implemented).
+	 * @param showingStats true if stats are to be displayed
 	 * @return true iff the source program is free of compile-time errors, otherwise
 	 *         false.
 	 */
-	static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingTable) {
+	static boolean compileProgram(String sourceName, String objectName, boolean showingAST, boolean showingStats, boolean showingTable) {
 
 		System.out.println("********** " + "Triangle Compiler (Java Version 2.1)" + " **********");
 
@@ -79,6 +81,8 @@ public class Compiler {
 		encoder = new Encoder(emitter, reporter);
 		drawer = new Drawer();
 
+		int integerExpressions = 0, characterExpressions = 0;
+
 		// scanner.enableDebugging();
 		theAST = parser.parseProgram(); // 1st pass
 		if (reporter.getNumErrors() == 0) {
@@ -93,6 +97,12 @@ public class Compiler {
 			if (folding) {
 				theAST.visit(new ConstantFolder());
 			}
+			if (showingStats){
+				ConstantFolderWithStats consWithStats = new ConstantFolderWithStats();
+				theAST.visit(consWithStats);
+				integerExpressions = consWithStats.getIntegerExpressions();
+				characterExpressions = consWithStats.getCharacterExpressions();
+			}
 			
 			if (reporter.getNumErrors() == 0) {
 				System.out.println("Code Generation ...");
@@ -104,7 +114,13 @@ public class Compiler {
 		if (successful) {
 			emitter.saveObjectProgram(objectName);
 			System.out.println("Compilation was successful.");
-		} else {
+
+			if (showingStats)
+			{
+				System.out.println("Integer Expressions: " + integerExpressions + "\n Character Expressions: " + characterExpressions);
+			}
+		}
+		else {
 			System.out.println("Compilation was unsuccessful.");
 		}
 		return successful;
@@ -117,7 +133,7 @@ public class Compiler {
 	 *             source filename.
 	 */
 
-
+	static boolean showStats = false;
 	static boolean showTree = false;
 	static boolean folding = false;
 	static String objectName = "obj.tam";
@@ -133,7 +149,7 @@ public class Compiler {
 
 		String sourceName = args[0];
 		
-		var compiledOK = compileProgram(sourceName, objectName, showTree, false);
+		var compiledOK = compileProgram(sourceName, objectName, showTree, showStats, false);
 
 		if (!showTree) {
 			System.exit(compiledOK ? 0 : 1);
@@ -149,6 +165,9 @@ public class Compiler {
 				objectName = s.substring(3);
 			} else if (sl.equals("folding")) {
 				folding = true;
+			} else if (sl.equals("showstats")) {
+				showStats = true;
+
 			}
 		}
 	}
