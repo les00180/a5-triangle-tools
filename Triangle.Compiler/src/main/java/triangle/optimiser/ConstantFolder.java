@@ -579,6 +579,7 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 		if ((node1 instanceof IntegerExpression) && (node2 instanceof IntegerExpression)) {
 			int int1 = (Integer.parseInt(((IntegerExpression) node1).IL.spelling));
 			int int2 = (Integer.parseInt(((IntegerExpression) node2).IL.spelling));
+
 			Object foldedValue = null;
 
 			if (o.decl == StdEnvironment.addDecl) {
@@ -600,14 +601,58 @@ public class ConstantFolder implements ActualParameterVisitor<Void, AbstractSynt
 			{
 				foldedValue = int1 % int2;
 			}
+			else if (o.decl == StdEnvironment.greaterDecl)
+			{
+				foldedValue = int1 > int2;
+			}
+			else if (o.decl == StdEnvironment.lessDecl)
+			{
+				foldedValue = int1 < int2;
+			}
+			else if (o.decl == StdEnvironment.notgreaterDecl)
+			{
+				foldedValue = int1 <= int2;
+			}
+			else if (o.decl == StdEnvironment.notlessDecl)
+			{
+				foldedValue = int1 >= int2;
+			}
+			else if (o.decl == StdEnvironment.equalDecl)
+			{
+				foldedValue = int1 == int2;
+			}
+			else if (o.decl == StdEnvironment.unequalDecl)
+			{
+				foldedValue = int1 != int2;
+			}
+
+
 
 			if (foldedValue instanceof Integer) {
 				IntegerLiteral il = new IntegerLiteral(foldedValue.toString(), node1.getPosition());
 				IntegerExpression ie = new IntegerExpression(il, node1.getPosition());
 				ie.type = StdEnvironment.integerType;
 				return ie;
-			} else if (foldedValue instanceof Boolean) {
-				/* currently not handled! */
+			}
+			else if (foldedValue != null)
+			{
+				if ((Boolean) foldedValue)
+				{
+					Identifier boolId = new Identifier("true", node1.getPosition());
+					boolId.decl = StdEnvironment.trueDecl;
+					SimpleVname simpleNameForBoolean = new SimpleVname(boolId, node1.getPosition());
+					VnameExpression vNameForBool = new VnameExpression(simpleNameForBoolean, node1.getPosition());
+					vNameForBool.type = StdEnvironment.booleanType;
+					return vNameForBool;
+				} else
+				{
+					Identifier boolId = new Identifier("false", node1.getPosition());
+					boolId.decl = StdEnvironment.falseDecl;
+					SimpleVname simpleNameForBoolean = new SimpleVname(boolId, node1.getPosition());
+					VnameExpression vNameForBool = new VnameExpression(simpleNameForBoolean, node1.getPosition());
+					vNameForBool.type = StdEnvironment.booleanType;
+					return vNameForBool;
+				}
 			}
 		}
 
